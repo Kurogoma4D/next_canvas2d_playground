@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 const Canvas: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseCoord = useRef({ x: 0, y: 0 });
+    const rotate = useRef({ alpha: 0, beta: 0 });
 
     const getContext = (): CanvasRenderingContext2D => {
         const canvas: HTMLCanvasElement = canvasRef.current!;
@@ -43,6 +44,24 @@ const Canvas: React.FC = () => {
             return;
         }
 
+        if (window.DeviceOrientationEvent) {
+            mouseCoord.current.x = Math.min(
+                Math.max(
+                    mouseCoord.current.x + (rotate.current.alpha / 90) * 10,
+                    0
+                ),
+                480
+            );
+            mouseCoord.current.y = Math.min(
+                Math.max(
+                    mouseCoord.current.y +
+                        (rotate.current.beta / 180 - 0.5) * 10,
+                    0
+                ),
+                480
+            );
+        }
+
         context.fillStyle = "#ffffff";
         context.fillRect(
             0,
@@ -73,7 +92,12 @@ const Canvas: React.FC = () => {
             mouseCoord.current.x = e.clientX;
             mouseCoord.current.y = e.clientY;
         };
+        const onDeviceRolled = (e: DeviceOrientationEvent) => {
+            rotate.current.alpha = e.alpha!;
+            rotate.current.beta = e.beta!;
+        };
         window.addEventListener("mousemove", e => onMouseMoved(e));
+        window.addEventListener("deviceorientation", e => onDeviceRolled(e));
 
         canvasRender(context);
 
