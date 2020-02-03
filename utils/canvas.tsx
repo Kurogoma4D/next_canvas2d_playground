@@ -39,6 +39,10 @@ const Canvas: React.FC = () => {
     };
 
     const canvasRender = (context: CanvasRenderingContext2D) => {
+        if (!context) {
+            return;
+        }
+
         context.fillStyle = "#ffffff";
         context.fillRect(
             0,
@@ -56,6 +60,10 @@ const Canvas: React.FC = () => {
             mouseCoord.current.y,
             "#ff9900"
         );
+
+        requestAnimationFrame(() => {
+            canvasRender(context);
+        });
     };
 
     useEffect(() => {
@@ -64,7 +72,6 @@ const Canvas: React.FC = () => {
         const onMouseMoved = (e: MouseEvent) => {
             mouseCoord.current.x = e.clientX;
             mouseCoord.current.y = e.clientY;
-            canvasRender(context);
         };
         window.addEventListener("mousemove", e => onMouseMoved(e));
 
