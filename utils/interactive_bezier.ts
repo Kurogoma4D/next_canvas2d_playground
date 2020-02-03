@@ -1,4 +1,4 @@
-import { Mouse } from "./canvas";
+import { Coord } from "./canvas";
 
 class InteractiveBezier {
     context: CanvasRenderingContext2D;
@@ -30,7 +30,7 @@ class InteractiveBezier {
         context.stroke();
     }
 
-    render(mouseCoord: Mouse) {
+    render(mouseCoord: Coord) {
         this.drawQuadraticBezier(
             this.context,
             100,

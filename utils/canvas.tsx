@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import InteractiveBezier from "./interactive_bezier";
+import LoadingAnimation from "./loading_animation";
 
-export type Mouse = {
+export type Coord = {
     x: number;
     y: number;
 };
@@ -9,13 +10,15 @@ export type Mouse = {
 type CanvasObject = {
     time: number;
     bezier: InteractiveBezier;
+    loading: LoadingAnimation;
 };
 
 const Canvas: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const mouseCoord = useRef<Mouse>({ x: 0, y: 0 });
+    const mouseCoord = useRef<Coord>({ x: 0, y: 0 });
     const rotate = useRef({ gamma: 0, beta: 0 });
     let objects: CanvasObject;
+    const startTime = Date.now();
 
     const getContext = (): CanvasRenderingContext2D => {
         const canvas: HTMLCanvasElement = canvasRef.current!;
@@ -54,7 +57,9 @@ const Canvas: React.FC = () => {
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
         objects?.bezier.render(mouseCoord.current);
+        objects.loading.render(objects.time);
 
+        objects.time = Date.now() - startTime;
         requestAnimationFrame(() => {
             canvasRender(context);
         });
@@ -64,8 +69,9 @@ const Canvas: React.FC = () => {
         initialize();
         const context: CanvasRenderingContext2D = getContext();
         objects = {
-            time: 0,
-            bezier: new InteractiveBezier(context)
+            time: startTime,
+            bezier: new InteractiveBezier(context),
+            loading: new LoadingAnimation(context)
         };
 
         const onMouseMoved = (e: MouseEvent) => {
