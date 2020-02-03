@@ -1,9 +1,21 @@
 import React, { useEffect, useRef } from "react";
+import InteractiveBezier from "./interactive_bezier";
+
+export type Mouse = {
+    x: number;
+    y: number;
+};
+
+type CanvasObject = {
+    time: number;
+    bezier: InteractiveBezier;
+};
 
 const Canvas: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const mouseCoord = useRef({ x: 0, y: 0 });
+    const mouseCoord = useRef<Mouse>({ x: 0, y: 0 });
     const rotate = useRef({ gamma: 0, beta: 0 });
+    let objects: CanvasObject;
 
     const getContext = (): CanvasRenderingContext2D => {
         const canvas: HTMLCanvasElement = canvasRef.current!;
@@ -14,29 +26,6 @@ const Canvas: React.FC = () => {
         const canvas: any = canvasRef.current;
         canvas.width = 640;
         canvas.height = 480;
-    };
-
-    const drawQuadraticBezier = (
-        context: CanvasRenderingContext2D,
-        x1: number,
-        y1: number,
-        x2: number,
-        y2: number,
-        cx: number,
-        cy: number,
-        color?: string,
-        width: number = 1
-    ) => {
-        if (color != null) {
-            context.strokeStyle = color;
-        }
-
-        context.lineWidth = width;
-        context.beginPath();
-        context.moveTo(x1, y1);
-        context.quadraticCurveTo(cx, cy, x2, y2);
-        context.closePath();
-        context.stroke();
     };
 
     const normalize = (value: number, begin: number, end: number): number => {
@@ -62,22 +51,9 @@ const Canvas: React.FC = () => {
         }
 
         context.fillStyle = "#ffffff";
-        context.fillRect(
-            0,
-            0,
-            canvasRef.current!.width,
-            canvasRef.current!.height
-        );
-        drawQuadraticBezier(
-            context,
-            100,
-            100,
-            100,
-            300,
-            mouseCoord.current.x,
-            mouseCoord.current.y,
-            "#ff9900"
-        );
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        objects?.bezier.render(mouseCoord.current);
 
         requestAnimationFrame(() => {
             canvasRender(context);
@@ -87,6 +63,11 @@ const Canvas: React.FC = () => {
     useEffect(() => {
         initialize();
         const context: CanvasRenderingContext2D = getContext();
+        objects = {
+            time: 0,
+            bezier: new InteractiveBezier(context)
+        };
+
         const onMouseMoved = (e: MouseEvent) => {
             mouseCoord.current.x = e.clientX;
             mouseCoord.current.y = e.clientY;
