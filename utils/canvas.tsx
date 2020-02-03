@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 const Canvas: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseCoord = useRef({ x: 0, y: 0 });
-    const rotate = useRef({ alpha: 0, beta: 0 });
+    const rotate = useRef({ gamma: 0, beta: 0 });
 
     const getContext = (): CanvasRenderingContext2D => {
         const canvas: HTMLCanvasElement = canvasRef.current!;
@@ -39,6 +39,12 @@ const Canvas: React.FC = () => {
         context.stroke();
     };
 
+    const normalize = (value: number, begin: number, end: number): number => {
+        const half = (end - begin) / 2;
+        const clamped = Math.min(Math.max(value, begin), end) - half;
+        return clamped / half;
+    };
+
     const canvasRender = (context: CanvasRenderingContext2D) => {
         if (!context) {
             return;
@@ -46,18 +52,11 @@ const Canvas: React.FC = () => {
 
         if (window.DeviceOrientationEvent) {
             mouseCoord.current.x = Math.min(
-                Math.max(
-                    mouseCoord.current.x + (rotate.current.alpha / 90) * 10,
-                    0
-                ),
+                Math.max(mouseCoord.current.x + rotate.current.gamma * 10, 0),
                 480
             );
             mouseCoord.current.y = Math.min(
-                Math.max(
-                    mouseCoord.current.y +
-                        (rotate.current.beta / 180 - 0.5) * 10,
-                    0
-                ),
+                Math.max(mouseCoord.current.y + rotate.current.beta * 10, 0),
                 480
             );
         }
@@ -93,8 +92,8 @@ const Canvas: React.FC = () => {
             mouseCoord.current.y = e.clientY;
         };
         const onDeviceRolled = (e: DeviceOrientationEvent) => {
-            rotate.current.alpha = e.alpha!;
-            rotate.current.beta = e.beta!;
+            rotate.current.gamma = normalize(e.gamma!, -90, 90);
+            rotate.current.beta = normalize(e.beta!, 0, 90);
         };
         window.addEventListener("mousemove", e => onMouseMoved(e));
         window.addEventListener("deviceorientation", e => onDeviceRolled(e));
