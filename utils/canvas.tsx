@@ -63,7 +63,7 @@ const Canvas: React.FC = () => {
         // objects?.bezier.render(mouseCoord.current);
         // objects.loading.render(objects.time);
         // objects.ball.render(objects.time);
-        objects.text.render();
+        objects.text.render(objects.time);
 
         objects.time = Date.now() - startTime;
         requestAnimationFrame(() => {
