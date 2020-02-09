@@ -19,8 +19,18 @@ class QuoteText {
         this.quote = ["クリエイターなら、", "つくり続けた奴が正義だ。"];
     }
 
-    render(tick: number) {
+    shrink(index: number, tick: number): number {
         let ease = Math.min(this.keyframe, tick);
+        return (
+            Math.exp(index * 1.8) * (1.0 - this.easing(ease / this.keyframe))
+        );
+    }
+
+    expand(index: number, tick: number, modifier: number) {
+        return Math.max(tick / this.keyframe, 1.0) * index * modifier;
+    }
+
+    render(tick: number) {
         let transparent = Math.min(600, tick) / 600;
         this.context.fillStyle = `rgba(255, 255, 255, ${this.easing(
             transparent
@@ -32,9 +42,8 @@ class QuoteText {
                 this.context.fillText(
                     v,
                     i * this.fontSize +
-                        Math.exp(i * 1.8) *
-                            (1.0 - this.easing(ease / this.keyframe)) +
-                        Math.max(tick / this.keyframe, 1.0) * i * 0.4,
+                        this.shrink(i, tick) +
+                        this.expand(i, tick, 0.4),
                     this.height / 2
                 )
             );
@@ -44,9 +53,8 @@ class QuoteText {
                 this.context.fillText(
                     v,
                     i * this.fontSize +
-                        Math.exp(i * 1.8) *
-                            (1.0 - this.easing(ease / this.keyframe)) +
-                        Math.max(tick / this.keyframe, 1.0) * i * 0.2,
+                        this.shrink(i, tick) +
+                        this.expand(i, tick, 0.2),
                     this.height / 2 + this.fontSize + 8
                 )
             );
