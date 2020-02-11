@@ -20,7 +20,6 @@ class BallAnimation {
                 x: Math.random() * width,
                 y: height
             }));
-        console.log(this.coord);
         this.begin = [
             { x: width / 2 - 60, y: height / 2 - 60 },
             { x: width / 2 + 60, y: height / 2 - 60 },

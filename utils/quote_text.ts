@@ -9,7 +9,7 @@ class QuoteText {
     fontSize: number;
     quote: string[];
     easing = BezierEasing(0.71, 0.01, 0.79, 0.15);
-    keyframe = 750;
+    keyframes = [750, 2000];
 
     constructor(context: CanvasRenderingContext2D) {
         this.context = context;
@@ -20,14 +20,15 @@ class QuoteText {
     }
 
     shrink(index: number, tick: number): number {
-        let ease = Math.min(this.keyframe, tick);
+        let ease = Math.min(this.keyframes[0], tick);
         return (
-            Math.exp(index * 1.8) * (1.0 - this.easing(ease / this.keyframe))
+            Math.exp(index * 1.8) *
+            (1.0 - this.easing(ease / this.keyframes[0]))
         );
     }
 
     expand(index: number, tick: number, modifier: number) {
-        return Math.max(tick / this.keyframe, 1.0) * index * modifier;
+        return Math.max(tick / this.keyframes[0], 1.0) * index * modifier;
     }
 
     render(tick: number) {
