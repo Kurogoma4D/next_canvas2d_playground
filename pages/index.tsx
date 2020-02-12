@@ -1,15 +1,24 @@
 import * as React from "react";
-import Layout from "../components/Layout";
 import { NextPage } from "next";
-import Canvas from "../utils/canvas";
+
+import KonvaStage from "../utils/konva_stage";
 
 const IndexPage: NextPage = () => {
-    return (
-        <Layout title="Home | Next.js + TypeScript Example">
-            <h1>Hello Next.js 👋</h1>
-            <Canvas></Canvas>
-        </Layout>
-    );
+  return (
+    <div>
+      <div className="main">
+        <h1>hi</h1>
+      </div>
+      <KonvaStage></KonvaStage>
+      <style jsx>{`
+        .main {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default IndexPage;
