@@ -49,7 +49,7 @@ const CreateCanvas: React.FC = () => {
       .to(begin[0], duration, createjs.Ease.cubicOut);
 
     s.addChild(circle);
-    createjs.Ticker.setFPS(60);
+    createjs.Ticker.framerate = 60;
     createjs.Ticker.addEventListener("tick", s);
   };
 
