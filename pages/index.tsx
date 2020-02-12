@@ -1,7 +1,7 @@
 import * as React from "react";
 import { NextPage } from "next";
 
-import KonvaStage from "../utils/konva_stage";
+import CreateCanvas from "../utils/create_canvas";
 
 const IndexPage: NextPage = () => {
   return (
@@ -9,7 +9,7 @@ const IndexPage: NextPage = () => {
       <div className="main">
         <h1>hi</h1>
       </div>
-      <KonvaStage></KonvaStage>
+      <CreateCanvas></CreateCanvas>
       <style jsx>{`
         .main {
           position: absolute;
