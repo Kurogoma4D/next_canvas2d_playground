@@ -1,6 +1,7 @@
 /// <reference types="../node_modules/@types/createjs/" />
 
 import React, { useEffect, useRef } from "react";
+import { buildTextline } from "./splash_animation";
 
 export type Coord = {
   x: number;
@@ -49,6 +50,9 @@ const CreateCanvas: React.FC = () => {
       .to(begin[0], duration, createjs.Ease.cubicOut);
 
     s.addChild(circle);
+
+    s.addChild(buildTextline());
+
     createjs.Ticker.framerate = 60;
     createjs.Ticker.addEventListener("tick", s);
   };
