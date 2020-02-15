@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import InteractiveBezier from "./interactive_bezier";
 import LoadingAnimation from "./loading_animation";
+import BallAnimation from "./ball_animation";
+import QuoteText from "./quote_text";
 
 export type Coord = {
     x: number;
@@ -11,6 +13,8 @@ type CanvasObject = {
     time: number;
     bezier: InteractiveBezier;
     loading: LoadingAnimation;
+    ball: BallAnimation;
+    text: QuoteText;
 };
 
 const Canvas: React.FC = () => {
@@ -53,11 +57,13 @@ const Canvas: React.FC = () => {
             );
         }
 
-        context.fillStyle = "#ffffff";
+        context.fillStyle = "#424242";
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
-        objects?.bezier.render(mouseCoord.current);
-        objects.loading.render(objects.time);
+        // objects?.bezier.render(mouseCoord.current);
+        // objects.loading.render(objects.time);
+        // objects.ball.render(objects.time);
+        objects.text.render(objects.time);
 
         objects.time = Date.now() - startTime;
         requestAnimationFrame(() => {
@@ -71,7 +77,9 @@ const Canvas: React.FC = () => {
         objects = {
             time: startTime,
             bezier: new InteractiveBezier(context),
-            loading: new LoadingAnimation(context)
+            loading: new LoadingAnimation(context),
+            ball: new BallAnimation(context),
+            text: new QuoteText(context)
         };
 
         const onMouseMoved = (e: MouseEvent) => {
