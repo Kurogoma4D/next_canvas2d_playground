@@ -27,7 +27,7 @@ const buildLetter = (
   offset: number,
   color: string
 ): createjs.Text => {
-  const element = new createjs.Text(letter, `${size}px San-serif`, color);
+  const element = new createjs.Text(letter, `bold ${size}px Helvetica`, color);
   element.x = size * index + size / 2;
   element.y = 0;
   element.regX = element.regY = size / 2;
@@ -38,7 +38,7 @@ const buildLetter = (
   createjs.Tween.get(element)
     .wait(offset)
     .wait(70 * index)
-    .to({ scale: 1, rotation: 0 }, 250, createjs.Ease.cubicOut);
+    .to({ scale: 1, rotation: 0 }, 250, createjs.Ease.backOut);
 
   return element;
 };

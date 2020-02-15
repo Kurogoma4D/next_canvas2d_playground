@@ -39,32 +39,38 @@ const CreateCanvas: React.FC = () => {
     text.regY = canvas.height / 2;
     text.y = canvas.height / 2;
 
-    text.addChild(
-      buildTextline(
-        canvas.width,
-        "クリエイターなら、",
-        canvas.height / 3,
-        100,
-        "#F78E8A"
-      )
-    );
-    text.addChild(
-      buildTextline(
-        canvas.width,
-        "つくり続けた奴が正義だ。",
-        canvas.height / 2.2,
-        1300,
-        "#754342"
-      )
+    const first = buildTextline(
+      canvas.width,
+      "クリエイターなら、",
+      canvas.height / 2.2,
+      500,
+      "#F78E8A"
     );
 
+    const second = buildTextline(
+      canvas.width,
+      "つくり続けた奴が正義だ。",
+      canvas.height / 2.2,
+      1700,
+      "#754342"
+    );
+
+    let size = canvas.width / 13;
+    createjs.Tween.get(first)
+      .wait(70 * 9 + 800)
+      .to({ y: canvas.height / 2.2 - size }, 500, createjs.Ease.backInOut);
+
+    text.addChild(first);
+    text.addChild(second);
+
     createjs.Tween.get(background)
-      .wait(70 * 12 + 1700)
+      .wait(70 * 12 + 2200)
       .to({ alpha: 0 }, 500);
 
     createjs.Tween.get(text)
-      .wait(70 * 9 + 400)
-      .to({ scale: 1 }, 320, createjs.Ease.getBackInOut(2));
+      .wait(70 * 9 + 800)
+      .to({ scale: 1.1 }, 320, createjs.Ease.cubicOut)
+      .to({ scale: 1 }, 460, createjs.Ease.cubicInOut);
 
     s.addChild(background);
     s.addChild(text);
@@ -74,7 +80,8 @@ const CreateCanvas: React.FC = () => {
 
     function canvasRender() {
       tick += 0.01;
-      text.x = canvas.width / 2 + simplex.noise2D(tick, 0) * 12 + 40;
+      text.x =
+        canvas.width / 2 + simplex.noise2D(tick, 0) * 12 + canvas.width / 14;
       text.y = canvas.height / 2 + simplex.noise2D(0, tick) * 12;
       s?.update();
     }
