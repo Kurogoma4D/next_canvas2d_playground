@@ -1,12 +1,19 @@
 /// <reference types="../node_modules/@types/createjs/" />
 
-export const buildTextline = (): createjs.Container => {
+export const buildTextline = (
+  width: number,
+  text: string,
+  y: number,
+  offset: number,
+  color: string
+): createjs.Container => {
   const container = new createjs.Container();
-  let firstText = "サンプル、";
+  const size = width / (text.length + 4);
+  container.y = y;
 
-  let texts = firstText
+  let texts = text
     .split("")
-    .map((s, i) => buildLetter(s, i, 20 * i + 60, 50));
+    .map((s, i) => buildLetter(s, i, size, offset, color));
 
   container.addChild(...texts);
 
@@ -16,16 +23,22 @@ export const buildTextline = (): createjs.Container => {
 const buildLetter = (
   letter: string,
   index: number,
-  x: number,
-  y: number
+  size: number,
+  offset: number,
+  color: string
 ): createjs.Text => {
-  const element = new createjs.Text(letter, "20px San-serif", "#424242");
-  element.x = x;
-  element.y = y;
+  const element = new createjs.Text(letter, `${size}px San-serif`, color);
+  element.x = size * index + size / 2;
+  element.y = 0;
+  element.regX = element.regY = size / 2;
+  element.scaleX = 0;
+  element.scaleY = 0;
+  element.rotation = -220;
 
-  createjs.Tween.get(element, { loop: -1 })
-    .to({ scale: 0 }, 1000 * (index + 1), createjs.Ease.cubicOut)
-    .wait(1000 * (4 - index));
+  createjs.Tween.get(element)
+    .wait(offset)
+    .wait(70 * index)
+    .to({ scale: 1, rotation: 0 }, 250, createjs.Ease.cubicOut);
 
   return element;
 };

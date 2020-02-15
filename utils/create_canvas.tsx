@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { buildTextline } from "./splash_animation";
+import SimplexNoise from "simplex-noise";
 
 export type Coord = {
   x: number;
@@ -11,67 +12,77 @@ export type Coord = {
 const CreateCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stage = useRef<createjs.Stage>(null);
-  const duration = 500;
-
-  let begin: Coord[] = [];
-
-  const getContext = (): CanvasRenderingContext2D => {
-    const canvas: HTMLCanvasElement = canvasRef.current!;
-    return canvas.getContext("2d")!;
-  };
+  const simplex = new SimplexNoise(Math.random);
+  let tick = 0.0;
 
   const initialize = () => {
     const canvas = canvasRef.current!;
-    canvas.width = 640;
-    canvas.height = 480;
-
-    begin = [
-      { x: canvas.width / 2 - 60, y: canvas.height / 2 - 60 },
-      { x: canvas.width / 2 + 60, y: canvas.height / 2 - 60 },
-      { x: canvas.width / 2 + 60, y: canvas.height / 2 + 60 },
-      { x: canvas.width / 2 - 60, y: canvas.height / 2 + 60 }
-    ];
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   };
 
-  const sample = () => {
+  const buildStage = () => {
     const canvas = canvasRef.current!;
     let s = stage.current;
 
     s = new createjs.Stage(canvas);
-    let circle = new createjs.Shape();
-    circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 20);
-    circle.x = begin[0].x;
-    circle.y = begin[0].y;
 
-    createjs.Tween.get(circle, { loop: -1 })
-      .to(begin[1], duration, createjs.Ease.cubicOut)
-      .to(begin[2], duration, createjs.Ease.cubicOut)
-      .to(begin[3], duration, createjs.Ease.cubicOut)
-      .to(begin[0], duration, createjs.Ease.cubicOut);
+    const background = new createjs.Shape();
+    const text = new createjs.Container();
 
-    s.addChild(circle);
+    background.graphics
+      .beginFill("#F5D4D3")
+      .drawRect(0, 0, canvas.width, canvas.height);
 
-    s.addChild(buildTextline());
+    text.scaleX = text.scaleY = 0.6;
+    text.regX = canvas.width / 2;
+    text.regY = canvas.height / 2;
+    text.y = canvas.height / 2;
+
+    text.addChild(
+      buildTextline(
+        canvas.width,
+        "クリエイターなら、",
+        canvas.height / 3,
+        100,
+        "#F78E8A"
+      )
+    );
+    text.addChild(
+      buildTextline(
+        canvas.width,
+        "つくり続けた奴が正義だ。",
+        canvas.height / 2.2,
+        1300,
+        "#754342"
+      )
+    );
+
+    createjs.Tween.get(background)
+      .wait(70 * 12 + 1700)
+      .to({ alpha: 0 }, 500);
+
+    createjs.Tween.get(text)
+      .wait(70 * 9 + 400)
+      .to({ scale: 1 }, 320, createjs.Ease.getBackInOut(2));
+
+    s.addChild(background);
+    s.addChild(text);
 
     createjs.Ticker.framerate = 60;
-    createjs.Ticker.addEventListener("tick", s);
-  };
+    createjs.Ticker.addEventListener("tick", canvasRender);
 
-  const canvasRender = (context: CanvasRenderingContext2D) => {
-    if (!context) {
-      return;
+    function canvasRender() {
+      tick += 0.01;
+      text.x = canvas.width / 2 + simplex.noise2D(tick, 0) * 12 + 40;
+      text.y = canvas.height / 2 + simplex.noise2D(0, tick) * 12;
+      s?.update();
     }
-    requestAnimationFrame(() => {
-      canvasRender(context);
-    });
   };
 
   useEffect(() => {
     initialize();
-    const context: CanvasRenderingContext2D = getContext();
-    sample();
-
-    canvasRender(context);
+    buildStage();
 
     return () => {};
   }, []);
