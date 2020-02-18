@@ -1,8 +1,8 @@
 /// <reference types="../node_modules/@types/createjs/" />
 
 import React, { useEffect, useRef } from "react";
-import { buildLoading } from "./splash_animation";
 import SimplexNoise from "simplex-noise";
+import { buildText, buildKawaii, buildCactus } from "./kawaii";
 
 export type Coord = {
   x: number;
@@ -14,6 +14,7 @@ const CreateCanvas: React.FC = () => {
   const stage = useRef<createjs.Stage>(null);
   const simplex = new SimplexNoise(Math.random);
   let tick = 0.0;
+  let cactusPositionY = 0.0;
 
   const initialize = () => {
     const canvas = canvasRef.current!;
@@ -27,28 +28,38 @@ const CreateCanvas: React.FC = () => {
 
     s = new createjs.Stage(canvas);
 
-    const background = new createjs.Shape();
-    const text = buildLoading(canvas);
+    const container = new createjs.Container();
+    container.regX = container.x = canvas.width / 2;
+    container.regY = container.y = canvas.height / 2;
 
-    background.graphics
-      .beginFill("#F5D4D3")
-      .drawRect(0, 0, canvas.width, canvas.height);
+    const text = buildText(canvas.width, canvas.height);
+    container.addChild(text);
 
-    createjs.Tween.get(background)
-      .wait(70 * 12 + 2200)
-      .to({ alpha: 0 }, 500);
+    const kawaii = buildKawaii(canvas.width, canvas.height);
+    container.addChild(kawaii);
 
-    s.addChild(background);
-    s.addChild(text);
+    const cactus = buildCactus(canvas.width, canvas.height);
+    cactusPositionY = cactus.y;
+    container.addChild(cactus);
+
+    s.addChild(container);
 
     createjs.Ticker.framerate = 60;
     createjs.Ticker.addEventListener("tick", canvasRender);
 
     function canvasRender() {
       tick += 0.01;
-      text.x =
-        canvas.width / 2 + simplex.noise2D(tick, 0) * 12 + canvas.width / 14;
-      text.y = canvas.height / 2 + simplex.noise2D(0, tick) * 12;
+
+      container.x = canvas.width / 2 + simplex.noise2D(tick, 0) * 10;
+      container.y = canvas.height / 2 + simplex.noise2D(0, tick) * 10;
+
+      let sin = Math.sin(tick * 10);
+      cactus.y = cactusPositionY - Math.abs(sin) * 18;
+      cactus.rotation = sin * 18;
+
+      container.scaleX = Math.abs(sin) * 0.2 + 1;
+      container.scaleY = Math.abs(sin) * 0.2 + 1;
+
       s?.update();
     }
   };

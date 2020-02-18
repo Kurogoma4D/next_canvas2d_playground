@@ -6,9 +6,7 @@ import CreateCanvas from "../utils/create_canvas";
 const IndexPage: NextPage = () => {
   return (
     <div>
-      <div className="main">
-        <h1>hi</h1>
-      </div>
+      <div className="main"></div>
       <CreateCanvas></CreateCanvas>
       <style jsx>{`
         .main {
