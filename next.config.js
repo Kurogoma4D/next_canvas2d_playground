@@ -5,6 +5,13 @@ const nextConfig = {
       createjs: "createjs"
     });
     return config;
+  },
+
+  exportTrailingSlash: true,
+  exportPathMap: function() {
+    return {
+      "/": { page: "/" }
+    };
   }
 };
 

@@ -1,27 +1,30 @@
 {
-    "name": "with-typescript",
-    "version": "1.0.0",
-    "scripts": {
-        "dev": "next",
-        "build": "next build",
-        "start": "next start",
-        "type-check": "tsc"
-    },
-    "dependencies": {
-        "bezier-easing": "^2.1.0",
-        "isomorphic-unfetch": "3.0.0",
-        "next": "latest",
-        "react": "^16.12.0",
-        "react-dom": "^16.12.0",
-        "simplex-noise": "^2.4.0"
-    },
-    "devDependencies": {
-        "@types/bezier-easing": "^2.1.2",
-        "@types/createjs": "^0.0.29",
-        "@types/node": "^12.12.21",
-        "@types/react": "^16.9.16",
-        "@types/react-dom": "^16.9.4",
-        "typescript": "3.7.3"
-    },
-    "license": "ISC"
+  "name": "with-typescript",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next",
+    "clean": "rimraf \"dist/\"",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "tsc",
+    "export": "next export"
+  },
+  "dependencies": {
+    "bezier-easing": "^2.1.0",
+    "isomorphic-unfetch": "3.0.0",
+    "next": "latest",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "simplex-noise": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/bezier-easing": "^2.1.2",
+    "@types/createjs": "^0.0.29",
+    "@types/node": "^12.12.21",
+    "@types/react": "^16.9.16",
+    "@types/react-dom": "^16.9.4",
+    "rimraf": "^3.0.2",
+    "typescript": "3.7.3"
+  },
+  "license": "ISC"
 }
