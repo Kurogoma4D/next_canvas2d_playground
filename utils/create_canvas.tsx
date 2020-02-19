@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import SimplexNoise from "simplex-noise";
-import { buildText, buildKawaii, buildCactus } from "./kawaii";
+import { buildText, buildKawaii, buildCactus, buildBackground } from "./kawaii";
 
 export type Coord = {
   x: number;
@@ -31,6 +31,9 @@ const CreateCanvas: React.FC = () => {
     const container = new createjs.Container();
     container.regX = container.x = canvas.width / 2;
     container.regY = container.y = canvas.height / 2;
+
+    const background = buildBackground(canvas.width, canvas.height);
+    s.addChild(...background);
 
     const text = buildText(canvas.width, canvas.height);
     container.addChild(text);
